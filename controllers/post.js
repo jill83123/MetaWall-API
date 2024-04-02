@@ -1,12 +1,28 @@
 const Post = require('../models/post.js');
+const User = require('../models/user.js');
+
 const handleSuccess = require('../service/handleSuccess.js');
 const handleError = require('../service/handleError.js');
 
 const PostController = {
   async getPosts(req, res) {
     try {
-      const posts = await Post.find();
-      handleSuccess({ res, data: { posts } });
+      const { sort, q } = req.query;
+      const timeSort = sort === 'asc' ? 'createdAt' : '-createdAt';
+      const keywords = q !== '' && q !== undefined ? { content: new RegExp(req.query.q) } : {};
+
+      const posts = await Post.find(keywords)
+        .populate({
+          path: 'user',
+          select: 'name photo',
+        })
+        .sort(timeSort);
+
+      if (Object.keys(keywords).length !== 0 && posts.length === 0) {
+        handleError({ res, status: 404, message: '找不到相關貼文' });
+      } else {
+        handleSuccess({ res, data: { posts } });
+      }
     } catch (err) {
       handleError({ res, err });
     }
@@ -17,7 +33,7 @@ const PostController = {
       const { body } = req;
 
       const post = await Post.create({
-        name: body.name,
+        user: body.user,
         image: body.image || '',
         content: body.content,
         type: body.type,

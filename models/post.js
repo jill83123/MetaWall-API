@@ -2,9 +2,10 @@ const mongoose = require('mongoose');
 
 const postSchema = new mongoose.Schema(
   {
-    name: {
-      type: String,
-      required: [true, 'name 為必填'],
+    user: {
+      type: mongoose.Schema.ObjectId,
+      ref: 'User',
+      required: [true, 'user 為必填'],
     },
 
     image: {
@@ -36,8 +37,8 @@ const postSchema = new mongoose.Schema(
     type: {
       type: String,
       enum: {
-        values: ['friend', 'group'],
-        message: 'type 只能是 friend 或 group',
+        values: ['friend', 'public'],
+        message: 'type 只能是 friend 或 public',
       },
       required: [true, 'type 為必填'],
     },
@@ -49,13 +50,13 @@ const postSchema = new mongoose.Schema(
           if (!Array.isArray(tags)) return false;
 
           for (const tag of tags) {
-            if (typeof tag !== 'string') {
+            if (typeof tag !== 'string' || tag.trim() === '') {
               return false;
             }
           }
           return true;
         },
-        message: 'tags 型別錯誤',
+        message: 'tags 型別錯誤或不得為空',
       },
     },
 
