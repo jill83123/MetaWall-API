@@ -2,10 +2,10 @@ const Post = require('../models/post.js');
 const User = require('../models/user.js');
 
 const handleSuccess = require('../service/handleSuccess.js');
-const handleError = require('../service/handleError.js');
+const createCustomError = require('../service/createCustomError.js');
 
 const PostController = {
-  async getPosts(req, res) {
+  async getPosts(req, res, next) {
     const { sort, q } = req.query;
     const timeSort = sort === 'asc' ? 'createdAt' : '-createdAt';
     const keywords = q !== '' && q !== undefined ? { content: new RegExp(req.query.q) } : {};
@@ -18,13 +18,13 @@ const PostController = {
       .sort(timeSort);
 
     if (Object.keys(keywords).length !== 0 && posts.length === 0) {
-      handleError({ res, status: 404, message: '找不到相關貼文' });
+      createCustomError({ statusCode: 404, message: '找不到相關貼文', next });
     } else {
       handleSuccess({ res, data: { posts } });
     }
   },
 
-  async createPost(req, res) {
+  async createPost(req, res, next) {
     const { body } = req;
 
     const post = await Post.create({
@@ -39,12 +39,12 @@ const PostController = {
     handleSuccess({ res, message: '新增成功', data: { post } });
   },
 
-  async editPost(req, res) {
+  async editPost(req, res, next) {
     const { body } = req;
     const { id } = req.params;
 
     if (!Object.keys(body).length) {
-      handleError({ res, message: '修改欄位不得為空' });
+      createCustomError({ statusCode: 400, message: '修改欄位不得為空', next });
       return;
     }
 
@@ -61,11 +61,11 @@ const PostController = {
     if (post) {
       handleSuccess({ res, message: '修改成功', data: { post } });
     } else {
-      handleError({ res, status: 404, message: '找不到 id' });
+      createCustomError({ statusCode: 404, message: '找不到 id', next });
     }
   },
 
-  async deleteAllPosts(req, res) {
+  async deleteAllPosts(req, res, next) {
     const post = await Post.deleteMany();
     handleSuccess({
       res,
@@ -74,14 +74,14 @@ const PostController = {
     });
   },
 
-  async deletePost(req, res) {
+  async deletePost(req, res, next) {
     const { id } = req.params;
     const post = await Post.findByIdAndDelete(id);
 
     if (post) {
       handleSuccess({ res, message: '刪除成功' });
     } else {
-      handleError({ res, status: 404, message: '找不到 id' });
+      createCustomError({ statusCode: 404, message: '找不到 id', next });
     }
   },
 };
