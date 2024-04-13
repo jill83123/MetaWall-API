@@ -5,6 +5,18 @@ const logger = require('morgan');
 const cors = require('cors');
 const handleError = require('./service/handleError.js');
 
+// 記錄重大錯誤
+process.on('uncaughtException', (err) => {
+  console.error('Uncaught Fatal Exception !\n', err);
+  process.exit(1);
+});
+
+// 未捕捉到的 catch
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('未捕捉到的 rejection:\n', promise);
+  console.error('原因:\n', reason);
+});
+
 // router
 const postRouter = require('./routes/post');
 const postsRouter = require('./routes/posts');
@@ -27,20 +39,26 @@ app.use('/posts', postsRouter);
 
 // catch 404
 app.use((req, res, next) => {
-  handleError({ res, status: 404, message: 'API 路徑不存在' });
+  res.status(404).send({
+    success: false,
+    message: 'API 路徑不存在',
+  });
 });
 
 // error handler
 app.use((err, req, res, next) => {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
+  handleError(err);
 
-  if (err.type === 'entity.parse.failed') {
-    return handleError({ res, err, message: '格式錯誤' });
+  const response = {
+    success: false,
+    message: err.message || '發生錯誤，請聯絡管理員',
+  };
+
+  if (process.env.NODE_ENV === 'dev') {
+    response.error = err;
   }
 
-  handleError({ res, err, status: err.status || 500 });
+  res.status(err.statusCode || 500).send(response);
 });
 
 module.exports = app;

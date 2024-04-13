@@ -26,21 +26,20 @@ function handleMongooseError(err) {
   };
 }
 
-function handleError({ res, err, status, message }) {
-  let statusCode = status || 400;
-  let errorMessage = message || '發生錯誤，請稍後再試';
-
+function handleError(err) {
   if (err && err instanceof mongoose.Error) {
     const { mongooseErrorMessage, mongooseErrorStatus } = handleMongooseError(err);
-    statusCode = mongooseErrorStatus;
-    errorMessage = mongooseErrorMessage;
+    err.isOperational = true;
+    err.statusCode = mongooseErrorStatus;
+    err.message = mongooseErrorMessage;
   }
 
-  res.status(statusCode).send({
-    success: false,
-    message: errorMessage,
-    error: err,
-  });
+  if (err && err.type === 'entity.parse.failed') {
+    err.isOperational = true;
+    err.message = '格式錯誤';
+  }
+
+  return err;
 }
 
 module.exports = handleError;
