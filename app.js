@@ -5,6 +5,18 @@ const logger = require('morgan');
 const cors = require('cors');
 const handleError = require('./service/handleError.js');
 
+// 記錄重大錯誤
+process.on('uncaughtException', (err) => {
+  console.error('Uncaught Fatal Exception !\n', err);
+  process.exit(1);
+});
+
+// 未捕捉到的 catch
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('未捕捉到的 rejection:\n', promise);
+  console.error('原因:\n', reason);
+});
+
 // router
 const postRouter = require('./routes/post');
 const postsRouter = require('./routes/posts');
