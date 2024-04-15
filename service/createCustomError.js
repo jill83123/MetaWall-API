@@ -1,9 +1,9 @@
-function createCustomError({ statusCode, message, next }) {
+function createCustomError({ statusCode, message }) {
   const error = new Error(message);
   error.statusCode = statusCode;
   error.isOperational = true;
 
-  next(error);
+  return error;
 }
 
 module.exports = createCustomError;

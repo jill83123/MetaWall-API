@@ -18,10 +18,11 @@ const PostController = {
       .sort(timeSort);
 
     if (Object.keys(keywords).length !== 0 && posts.length === 0) {
-      createCustomError({ statusCode: 404, message: '找不到相關貼文', next });
-    } else {
-      handleSuccess({ res, data: { posts } });
+      next(createCustomError({ statusCode: 404, message: '找不到相關貼文' }));
+      return;
     }
+
+    handleSuccess({ res, data: { posts } });
   },
 
   async createPost(req, res, next) {
@@ -44,7 +45,7 @@ const PostController = {
     const { id } = req.params;
 
     if (!Object.keys(body).length) {
-      createCustomError({ statusCode: 400, message: '修改欄位不得為空', next });
+      next(createCustomError({ statusCode: 400, message: '修改欄位不得為空' }));
       return;
     }
 
@@ -58,11 +59,12 @@ const PostController = {
 
     const post = await Post.findByIdAndUpdate(id, editData, { new: true, runValidators: true });
 
-    if (post) {
-      handleSuccess({ res, message: '修改成功', data: { post } });
-    } else {
-      createCustomError({ statusCode: 404, message: '找不到 id', next });
+    if (!post) {
+      next(createCustomError({ statusCode: 404, message: '找不到 id' }));
+      return;
     }
+
+    handleSuccess({ res, message: '修改成功', data: { post } });
   },
 
   async deleteAllPosts(req, res, next) {
@@ -78,11 +80,12 @@ const PostController = {
     const { id } = req.params;
     const post = await Post.findByIdAndDelete(id);
 
-    if (post) {
-      handleSuccess({ res, message: '刪除成功' });
-    } else {
-      createCustomError({ statusCode: 404, message: '找不到 id', next });
+    if (!post) {
+      next(createCustomError({ statusCode: 404, message: '找不到 id' }));
+      return;
     }
+
+    handleSuccess({ res, message: '刪除成功' });
   },
 };
 
