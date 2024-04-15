@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 
 const PostController = require('../controllers/post.js');
-const handleAsyncCatch = require('../service/handleAsyncCatch.js');
+const handleAsyncCatch = require('../middlewares/handleAsyncCatch.js');
 
 // 新增待辦
 router.post('/', handleAsyncCatch(PostController.createPost));
