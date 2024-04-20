@@ -39,6 +39,18 @@ function handleError(err) {
     err.message = '格式錯誤';
   }
 
+  // mongoose Schema unique 錯誤
+  if (err.code === 11000) {
+    err.statusCode = 400;
+    err.message = `該 ${Object.keys(err.keyValue).join('、')} 已被使用過`;
+  }
+
+  // JWT Token 錯誤
+  if (err.name === 'TokenExpiredError' || err.name === 'JsonWebTokenError') {
+    err.statusCode = 401;
+    err.message = '驗證失敗，請重新登入';
+  }
+
   return err;
 }
 

@@ -20,6 +20,7 @@ process.on('unhandledRejection', (reason, promise) => {
 // router
 const postRouter = require('./routes/post');
 const postsRouter = require('./routes/posts');
+const userRouter = require('./routes/user');
 
 const app = express();
 
@@ -36,6 +37,7 @@ app.use(cors());
 // router
 app.use('/post', postRouter);
 app.use('/posts', postsRouter);
+app.use('/user', userRouter);
 
 // catch 404
 app.use((req, res, next) => {
