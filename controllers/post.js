@@ -27,9 +27,10 @@ const PostController = {
 
   async createPost(req, res, next) {
     const { body } = req;
+    const { id } = req.user;
 
     const post = await Post.create({
-      user: body.user,
+      user: id,
       image: body.image || '',
       content: body.content,
       type: body.type,
