@@ -6,13 +6,13 @@ const PostController = require('../controllers/post.js');
 const auth = require('../middlewares/auth.js');
 const handleAsyncCatch = require('../middlewares/handleAsyncCatch.js');
 
-// 新增待辦
+// 新增貼文
 router.post('/', handleAsyncCatch(auth), handleAsyncCatch(PostController.createPost));
 
-// 編輯待辦
+// 編輯貼文
 router.patch('/:id', handleAsyncCatch(PostController.editPost));
 
-// 刪除單筆待辦
+// 刪除單筆貼文
 router.delete('/:id', handleAsyncCatch(PostController.deletePost));
 
 module.exports = router;
