@@ -20,6 +20,11 @@ const UserController = {
       return;
     }
 
+    if (name.length < 2) {
+      next(createCustomError({ statusCode: 400, message: 'name 至少 2 個字元以上' }));
+      return;
+    }
+
     if (!validatePassword(password)) {
       next(
         createCustomError({
