@@ -7,17 +7,23 @@ const createCustomError = require('../service/createCustomError.js');
 const PostController = {
   async getPosts(req, res, next) {
     const { sort, q } = req.query;
-    const timeSort = sort === 'asc' ? 'createdAt' : '-createdAt';
-    const keywords = q !== '' && q !== undefined ? { content: new RegExp(req.query.q) } : {};
 
-    const posts = await Post.find(keywords)
+    const timeSort = sort === 'asc' ? 'createdAt' : '-createdAt';
+    const keywords = new RegExp(q);
+
+    let fields = {};
+    if (q?.trim()) {
+      fields = { $or: [{ content: keywords }, { tags: keywords }] };
+    }
+
+    const posts = await Post.find(fields)
       .populate({
         path: 'user',
-        select: 'name photo',
+        select: '+name +photo -_id',
       })
       .sort(timeSort);
 
-    if (Object.keys(keywords).length !== 0 && posts.length === 0) {
+    if (q?.trim() && posts.length === 0) {
       next(createCustomError({ statusCode: 404, message: '找不到相關貼文' }));
       return;
     }
@@ -26,35 +32,36 @@ const PostController = {
   },
 
   async createPost(req, res, next) {
-    const { body } = req;
     const { id } = req.user;
+    const { image, content, type, tags } = req.body;
 
     const post = await Post.create({
       user: id,
-      image: body.image || '',
-      content: body.content,
-      type: body.type,
-      tags: body.tags || [],
+      image: image || '',
+      content,
+      type,
+      tags: tags || [],
       createdAt: Date.now(),
     });
 
+    post.user = undefined;
     handleSuccess({ res, message: '新增成功', data: { post } });
   },
 
   async editPost(req, res, next) {
-    const { body } = req;
     const { id } = req.params;
+    const { image, content, type, tags } = req.body;
 
-    if (!Object.keys(body).length) {
+    if (!Object.keys(req.body).length) {
       next(createCustomError({ statusCode: 400, message: '修改欄位不得為空' }));
       return;
     }
 
     const editData = {
-      image: body.image,
-      content: body.content,
-      type: body.type,
-      tags: body.tags,
+      image,
+      content,
+      type,
+      tags,
       updatedAt: Date.now(),
     };
 
@@ -65,11 +72,18 @@ const PostController = {
       return;
     }
 
+    post.user = undefined;
     handleSuccess({ res, message: '修改成功', data: { post } });
   },
 
   async deleteAllPosts(req, res, next) {
     const post = await Post.deleteMany();
+
+    if (post.deletedCount === 0) {
+      next(createCustomError({ statusCode: 400, message: '已沒有貼文可刪除' }));
+      return;
+    }
+
     handleSuccess({
       res,
       message: `已刪除所有貼文(共 ${post.deletedCount} 筆)`,
