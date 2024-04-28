@@ -53,6 +53,10 @@ function handleError(err) {
 
   if (err.name === 'MulterError') {
     err.statusCode = 400;
+
+    if (err.code === 'LIMIT_FILE_SIZE') {
+      err.message = '圖片檔案過大，僅限 1mb 以下的檔案';
+    }
   }
 
   return err;
