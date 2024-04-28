@@ -21,6 +21,7 @@ process.on('unhandledRejection', (reason, promise) => {
 const postRouter = require('./routes/post');
 const postsRouter = require('./routes/posts');
 const userRouter = require('./routes/user');
+const uploadRouter = require('./routes/upload');
 
 const app = express();
 
@@ -38,6 +39,7 @@ app.use(cors());
 app.use('/post', postRouter);
 app.use('/posts', postsRouter);
 app.use('/user', userRouter);
+app.use('/upload', uploadRouter);
 
 // catch 404
 app.use((req, res, next) => {

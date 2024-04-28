@@ -51,6 +51,10 @@ function handleError(err) {
     err.message = '驗證失敗，請重新登入';
   }
 
+  if (err.name === 'MulterError') {
+    err.statusCode = 400;
+  }
+
   return err;
 }
 
