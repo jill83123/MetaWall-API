@@ -25,7 +25,7 @@ const userRouter = require('./routes/user');
 const app = express();
 
 // 連接資料庫
-require('./connections/Mongodb.js');
+require('./connections/mongodb.js');
 
 app.use(logger('dev'));
 app.use(express.json());
