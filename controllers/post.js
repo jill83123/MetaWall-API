@@ -2,10 +2,11 @@ const Post = require('../models/post.js');
 const User = require('../models/user.js');
 
 const handleSuccess = require('../service/handleSuccess.js');
+const handleAsyncCatch = require('../service/handleAsyncCatch.js');
 const createCustomError = require('../service/createCustomError.js');
 
 const PostController = {
-  async getPosts(req, res, next) {
+  getPosts: handleAsyncCatch(async (req, res, next) => {
     const { sort, q } = req.query;
 
     const timeSort = sort === 'asc' ? 'createdAt' : '-createdAt';
@@ -29,9 +30,9 @@ const PostController = {
     }
 
     handleSuccess({ res, data: { posts } });
-  },
+  }),
 
-  async createPost(req, res, next) {
+  createPost: handleAsyncCatch(async (req, res, next) => {
     const { id } = req.user;
     const { image, content, type, tags } = req.body;
 
@@ -46,9 +47,9 @@ const PostController = {
 
     post.user = undefined;
     handleSuccess({ res, message: '新增成功', data: { post } });
-  },
+  }),
 
-  async editPost(req, res, next) {
+  editPost: handleAsyncCatch(async (req, res, next) => {
     const { id } = req.params;
     const { image, content, type, tags } = req.body;
 
@@ -74,9 +75,9 @@ const PostController = {
 
     post.user = undefined;
     handleSuccess({ res, message: '修改成功', data: { post } });
-  },
+  }),
 
-  async deleteAllPosts(req, res, next) {
+  deleteAllPosts: handleAsyncCatch(async (req, res, next) => {
     const post = await Post.deleteMany();
 
     if (post.deletedCount === 0) {
@@ -89,9 +90,9 @@ const PostController = {
       message: `已刪除所有貼文(共 ${post.deletedCount} 筆)`,
       data: { posts: [] },
     });
-  },
+  }),
 
-  async deletePost(req, res, next) {
+  deletePost: handleAsyncCatch(async (req, res, next) => {
     const { id } = req.params;
     const post = await Post.findByIdAndDelete(id);
 
@@ -101,7 +102,7 @@ const PostController = {
     }
 
     handleSuccess({ res, message: '刪除成功' });
-  },
+  }),
 };
 
 module.exports = PostController;

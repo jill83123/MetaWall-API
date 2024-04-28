@@ -5,6 +5,7 @@ const bcrypt = require('bcryptjs');
 const generateJWT = require('../service/generateJWT.js');
 
 const handleSuccess = require('../service/handleSuccess.js');
+const handleAsyncCatch = require('../service/handleAsyncCatch.js');
 const createCustomError = require('../service/createCustomError.js');
 
 function validatePassword(password) {
@@ -12,7 +13,7 @@ function validatePassword(password) {
 }
 
 const UserController = {
-  async sign_up(req, res, next) {
+  sign_up: handleAsyncCatch(async (req, res, next) => {
     const { name, email, password, confirmPassword } = req.body;
 
     if (!name?.trim() || !email?.trim() || !password?.trim() || !confirmPassword?.trim()) {
@@ -50,9 +51,9 @@ const UserController = {
     const { token, expires } = generateJWT({ id, auth_time });
 
     handleSuccess({ res, message: '註冊成功', data: { token, expires } });
-  },
+  }),
 
-  async sign_in(req, res, next) {
+  sign_in: handleAsyncCatch(async (req, res, next) => {
     const { email, password } = req.body;
 
     if (!email?.trim() || !password?.trim()) {
@@ -76,9 +77,9 @@ const UserController = {
     const { token, expires } = generateJWT({ id, auth_time });
 
     handleSuccess({ res, message: '登入成功', data: { token, expires } });
-  },
+  }),
 
-  async updatePassword(req, res, next) {
+  updatePassword: handleAsyncCatch(async (req, res, next) => {
     const { id, password } = req.user;
     const { oldPassword, newPassword, confirmNewPassword } = req.body;
 
@@ -114,9 +115,9 @@ const UserController = {
 
     const { token, expires } = generateJWT({ id, auth_time: updateData.auth_time });
     handleSuccess({ res, message: '密碼修改成功', data: { token, expires } });
-  },
+  }),
 
-  async getUserData(req, res, next) {
+  getUserData: handleAsyncCatch(async (req, res, next) => {
     const { name, photo, gender } = req.user;
 
     const data = {
@@ -128,9 +129,9 @@ const UserController = {
     };
 
     handleSuccess({ res, message: '取得資料成功', data });
-  },
+  }),
 
-  async editUserData(req, res, next) {
+  editUserData: handleAsyncCatch(async (req, res, next) => {
     const { name, photo, gender } = req.body;
 
     if (!name?.trim() || !gender?.trim()) {
@@ -163,7 +164,7 @@ const UserController = {
       },
     };
     handleSuccess({ res, message: '修改資料成功', data });
-  },
+  }),
 };
 
 module.exports = UserController;

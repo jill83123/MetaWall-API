@@ -1,8 +1,9 @@
 const User = require('../models/user.js');
 const decodeJWT = require('../service/decodeJWT.js');
+const handleAsyncCatch = require('../service/handleAsyncCatch.js');
 const createCustomError = require('../service/createCustomError.js');
 
-async function auth(req, res, next) {
+const auth = handleAsyncCatch(async (req, res, next) => {
   if (!req.headers.authorization?.startsWith('Bearer')) {
     next(createCustomError({ statusCode: 400, message: '缺少驗證資料' }));
     return;
@@ -26,6 +27,6 @@ async function auth(req, res, next) {
   req.user = user;
 
   next();
-}
+});
 
 module.exports = auth;
