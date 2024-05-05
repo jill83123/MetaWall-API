@@ -1,5 +1,5 @@
 const Post = require('../models/post.js');
-const User = require('../models/user.js');
+const Comment = require('../models/comment.js');
 
 const handleSuccess = require('../service/handleSuccess.js');
 const handleAsyncCatch = require('../service/handleAsyncCatch.js');
@@ -20,7 +20,11 @@ const PostController = {
     const posts = await Post.find(fields)
       .populate({
         path: 'user',
-        select: '+name +photo -_id',
+        select: 'name photo',
+      })
+      .populate({
+        path: 'comments',
+        select: 'comment createdAt updatedAt -post',
       })
       .sort(timeSort)
       .lean();
@@ -157,6 +161,70 @@ const PostController = {
 
     const data = { currentLikes: post.likes.length - 1 };
     handleSuccess({ res, message: '取消按讚成功', data });
+  }),
+
+  createComment: handleAsyncCatch(async (req, res, next) => {
+    const { id: userId } = req.user;
+    const { id: postId } = req.params;
+
+    const post = await Post.findOne({ _id: postId });
+    if (!post) {
+      next(createCustomError({ statusCode: 404, message: '該筆貼文不存在' }));
+      return;
+    }
+
+    await Comment.create({
+      user: userId,
+      post: postId,
+      comment: req.body.comment,
+      createdAt: Date.now(),
+    });
+
+    handleSuccess({ res, message: '新增留言成功' });
+  }),
+
+  editComment: handleAsyncCatch(async (req, res, next) => {
+    const { id } = req.params;
+
+    const comment = await Comment.findOne({ _id: id });
+    if (!comment) {
+      next(createCustomError({ statusCode: 404, message: '該筆留言不存在' }));
+      return;
+    }
+    if (comment.user.id !== req.user.id) {
+      next(createCustomError({ statusCode: 401, message: '沒有權限編輯此留言' }));
+      return;
+    }
+
+    const newComment = await Comment.findByIdAndUpdate(
+      { _id: id },
+      {
+        comment: req.body.comment,
+        updatedAt: Date.now(),
+      },
+      {
+        new: true,
+        runValidators: true,
+      }
+    );
+    handleSuccess({ res, message: '編輯留言成功', data: { comment: newComment } });
+  }),
+
+  deleteComment: handleAsyncCatch(async (req, res, next) => {
+    const { id } = req.params;
+
+    const comment = await Comment.findOne({ _id: id });
+    if (!comment) {
+      next(createCustomError({ statusCode: 404, message: '該筆留言不存在' }));
+      return;
+    }
+    if (comment.user.id !== req.user.id) {
+      next(createCustomError({ statusCode: 401, message: '沒有權限刪除此留言' }));
+      return;
+    }
+
+    await Comment.findByIdAndDelete({ _id: id });
+    handleSuccess({ res, message: '刪除留言成功' });
   }),
 };
 

@@ -30,11 +30,6 @@ const postSchema = new mongoose.Schema(
       },
     ],
 
-    comments: {
-      type: Number,
-      default: 0,
-    },
-
     type: {
       type: String,
       enum: {
@@ -75,6 +70,12 @@ const postSchema = new mongoose.Schema(
     versionKey: false,
   }
 );
+
+postSchema.virtual('comments', {
+  ref: 'Comment',
+  localField: '_id',
+  foreignField: 'post',
+});
 
 const Post = mongoose.model('Post', postSchema);
 module.exports = Post;
