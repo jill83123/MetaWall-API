@@ -16,4 +16,6 @@ router.get('/following', auth, UserController.getFollowingList);
 router.post('/:id/follow', auth, UserController.followUser);
 router.delete('/:id/unfollow', auth, UserController.unfollowUser);
 
+router.get('/getLikePosts', auth, UserController.getLikePosts);
+
 module.exports = router;

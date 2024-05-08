@@ -1,4 +1,5 @@
 const User = require('../models/user.js');
+const Post = require('../models/post.js');
 
 const validator = require('validator');
 const bcrypt = require('bcryptjs');
@@ -258,6 +259,20 @@ const UserController = {
 
     const followingList = currentUser.following || [];
     handleSuccess({ res, message: '取消追蹤成功', data: { followingList } });
+  }),
+
+  getLikePosts: handleAsyncCatch(async (req, res, next) => {
+    const likePosts = await Post.find({
+      likes: { $in: [req.user.id] },
+    })
+      .select('user createdAt')
+      .populate({
+        path: 'user',
+        select: 'name photo',
+      })
+      .lean();
+
+    handleSuccess({ res, message: '取得按讚列表成功', data: { likePosts } });
   }),
 };
 
