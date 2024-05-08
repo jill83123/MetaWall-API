@@ -6,8 +6,8 @@ const PostController = require('../controllers/post.js');
 
 router.get('/:id', auth, PostController.getPost);
 router.post('/', auth, PostController.createPost);
-router.patch('/:id', PostController.editPost);
-router.delete('/:id', PostController.deletePost);
+router.patch('/:id', auth, PostController.editPost);
+router.delete('/:id', auth, PostController.deletePost);
 
 router.post('/:id/like', auth, PostController.likePost);
 router.delete('/:id/unlike', auth, PostController.unlikePost);

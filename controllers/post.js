@@ -123,6 +123,18 @@ const PostController = {
       return;
     }
 
+    const post = await Post.findById(id);
+
+    if (!post) {
+      next(createCustomError({ statusCode: 404, message: '該筆貼文不存在' }));
+      return;
+    }
+
+    if (req.user.id !== post.user.toString()) {
+      next(createCustomError({ statusCode: 401, message: '沒有權限編輯此貼文' }));
+      return;
+    }
+
     const editData = {
       image,
       content,
@@ -130,16 +142,10 @@ const PostController = {
       tags,
       updatedAt: Date.now(),
     };
+    const newPost = await Post.findByIdAndUpdate(id, editData, { new: true, runValidators: true });
+    newPost.user = undefined;
 
-    const post = await Post.findByIdAndUpdate(id, editData, { new: true, runValidators: true });
-
-    if (!post) {
-      next(createCustomError({ statusCode: 404, message: '該筆貼文不存在' }));
-      return;
-    }
-
-    post.user = undefined;
-    handleSuccess({ res, message: '修改成功', data: { post } });
+    handleSuccess({ res, message: '修改成功', data: { post: newPost } });
   }),
 
   deleteAllPosts: handleAsyncCatch(async (req, res, next) => {
@@ -159,13 +165,19 @@ const PostController = {
 
   deletePost: handleAsyncCatch(async (req, res, next) => {
     const { id } = req.params;
-    const post = await Post.findByIdAndDelete(id);
+    const post = await Post.findById(id);
 
     if (!post) {
       next(createCustomError({ statusCode: 404, message: '該筆貼文不存在' }));
       return;
     }
 
+    if (req.user.id !== post.user.toString()) {
+      next(createCustomError({ statusCode: 401, message: '沒有權限刪除此貼文' }));
+      return;
+    }
+
+    await Post.findByIdAndDelete(id);
     handleSuccess({ res, message: '刪除成功' });
   }),
 
