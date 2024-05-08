@@ -1,4 +1,5 @@
 const Post = require('../models/post.js');
+const User = require('../models/user.js');
 const Comment = require('../models/comment.js');
 
 const handleSuccess = require('../service/handleSuccess.js');
@@ -60,6 +61,40 @@ const PostController = {
 
     post.likes = post.likes.length;
     handleSuccess({ res, data: { post }, message: '取得單一貼文成功' });
+  }),
+
+  getUserPosts: handleAsyncCatch(async (req, res, next) => {
+    const user = await User.findById(req.params.id).select('name photo followers').lean();
+
+    if (!user) {
+      next(createCustomError({ statusCode: 404, message: '該名使用者不存在' }));
+      return;
+    }
+    user.followers = user?.followers.length || 0;
+
+    const { sort, q } = req.query;
+    const timeSort = sort === 'asc' ? 'createdAt' : '-createdAt';
+    const keywords = new RegExp(q);
+
+    let fields = {};
+    if (q?.trim()) {
+      fields = { $or: [{ content: keywords }, { tags: keywords }] };
+    }
+
+    const posts = await Post.find({ user: { $in: [req.params.id] }, ...fields })
+      .select('-user')
+      .populate({
+        path: 'comments',
+        select: 'comment createdAt updatedAt -post',
+      })
+      .sort(timeSort)
+      .lean();
+
+    posts.forEach((post, index) => {
+      posts[index].likes = post?.likes.length || 0;
+    });
+
+    handleSuccess({ res, message: '取得個人所有貼文成功', data: { user, posts } });
   }),
 
   createPost: handleAsyncCatch(async (req, res, next) => {

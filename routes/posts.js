@@ -4,10 +4,9 @@ const router = express.Router();
 const auth = require('../middlewares/auth.js');
 const PostController = require('../controllers/post.js');
 
-// 取得所有貼文
 router.get('/', auth, PostController.getPosts);
+router.get('/user/:id', auth, PostController.getUserPosts);
 
-// 刪除所有貼文
-router.delete('/', PostController.deleteAllPosts);
+// router.delete('/', PostController.deleteAllPosts);
 
 module.exports = router;
