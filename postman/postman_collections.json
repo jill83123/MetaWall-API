@@ -1,0 +1,983 @@
+{
+	"info": {
+		"_postman_id": "73d7a535-1562-45a8-99a8-7f47e2c881a1",
+		"name": "MetaWall",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "27844152"
+	},
+	"item": [
+		{
+			"name": "[ post ] 動態貼文",
+			"item": [
+				{
+					"name": "貼文 CURD",
+					"item": [
+						{
+							"name": "取得所有貼文",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "authorization",
+										"value": "Bearer {{TOKEN}}",
+										"uuid": "50652bd5-d726-4257-b268-d505bc029eb4"
+									}
+								],
+								"url": {
+									"raw": "{{BASE_URL}}/posts",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"posts"
+									],
+									"query": [
+										{
+											"key": "sort",
+											"value": "desc",
+											"description": "預設，由新到舊",
+											"disabled": true
+										},
+										{
+											"key": "sort",
+											"value": "asc",
+											"description": "由舊到新",
+											"disabled": true
+										},
+										{
+											"key": "q",
+											"value": "風",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "取得單一貼文",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "authorization",
+										"value": "Bearer {{TOKEN}}",
+										"uuid": "ba9655b6-b227-4224-bf01-469804e67023"
+									}
+								],
+								"url": {
+									"raw": "{{BASE_URL}}/post/:id",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"post",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "663b481b4c9e11a048e43b96",
+											"uuid": "a9dd30ea-f027-4c7e-acbd-e6fee55cae94"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "取得個人所有貼文",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "authorization",
+										"value": "Bearer {{TOKEN}}",
+										"uuid": "2a042bb6-7ac8-44df-a17a-a30f0f40a7b4"
+									}
+								],
+								"url": {
+									"raw": "{{BASE_URL}}/posts/user/:id",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"posts",
+										"user",
+										":id"
+									],
+									"query": [
+										{
+											"key": "q",
+											"value": "",
+											"disabled": true
+										},
+										{
+											"key": "sort",
+											"value": "desc",
+											"description": "預設，由新到舊",
+											"disabled": true
+										},
+										{
+											"key": "sort",
+											"value": "asc",
+											"description": "由舊到新",
+											"disabled": true
+										}
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "663a6a14fb4e532e27e42004",
+											"uuid": "826bae73-79d4-487f-9261-2ed4a34d9cf1"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "新增貼文",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "authorization",
+										"value": "Bearer {{TOKEN}}",
+										"type": "text",
+										"uuid": "0a0000c8-7da0-4e3c-98c8-d2d9d8e93467"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"content\": \"當我出門一瞬間，就完蛋啦\",\r\n    \"type\": \"friend\",\r\n    \"tags\": [\r\n        \"大背頭\"\r\n    ]\r\n}\r\n// 錯誤測試\r\n// {\r\n//     \"name\": \"王小明\",\r\n//     \"content\": \"今天天氣真好\",\r\n//     \"type\": \"test\",\r\n//     \"tags\": 123\r\n// }",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{BASE_URL}}/post",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"post"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "編輯貼文",
+							"request": {
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "authorization",
+										"value": "Bearer {{TOKEN}}",
+										"uuid": "4e818e8b-93b3-453b-a6eb-ae640b608565"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"content\": \"今天天氣很涼爽\",\r\n    \"tags\": [\r\n        \"天氣\"\r\n    ]\r\n}\r\n// 錯誤測試\r\n// {\r\n//     \"type\": \"test\",\r\n//     \"tags\": \"test\",\r\n//     \"content\": \" \"\r\n// }",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{BASE_URL}}/post/:id",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"post",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "663b88552b393e363100af01",
+											"uuid": "4fc4e689-b0bd-46fa-9735-e1de10692e34"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "刪除單筆貼文",
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "authorization",
+										"value": "Bearer {{TOKEN}}",
+										"uuid": "ab0c7b27-b114-4694-b268-5085cc197e07"
+									}
+								],
+								"url": {
+									"raw": "{{BASE_URL}}/post/:id",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"post",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "663b7a00fda3698d74949e94",
+											"uuid": "71bdfba8-90d9-451a-8541-d7c295cdb201"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "刪除全部貼文 [ 暫停使用 ]",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{BASE_URL}}/posts",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"posts"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "貼文按讚功能",
+					"item": [
+						{
+							"name": "按讚一篇貼文",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "authorization",
+										"value": "Bearer {{TOKEN}}",
+										"uuid": "34ed9ebd-489c-4a56-aee2-85022adcb4af"
+									}
+								],
+								"url": {
+									"raw": "{{BASE_URL}}/post/:id/like",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"post",
+										":id",
+										"like"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "663b481b4c9e11a048e43b96",
+											"uuid": "2c45e365-7dd9-402a-9cd2-54e3a8512e56"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "取消按讚一篇貼文",
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "authorization",
+										"value": "Bearer {{TOKEN}}",
+										"uuid": "409ae939-c37c-4dff-a46c-f263d91674ce"
+									}
+								],
+								"url": {
+									"raw": "{{BASE_URL}}/post/:id/unlike",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"post",
+										":id",
+										"unlike"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "663519a0b5606b59fceb55f6",
+											"uuid": "3cf60658-6cf9-43c5-9d42-00082f513f44"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "貼文留言功能",
+					"item": [
+						{
+							"name": "新增貼文留言",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "authorization",
+										"value": "Bearer {{TOKEN}}",
+										"uuid": "5c118917-81cb-4c33-a0b7-f401fdd8f5f3"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"comment\": \"今天的風真的好大！\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{BASE_URL}}/post/:id/comment",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"post",
+										":id",
+										"comment"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "663b481b4c9e11a048e43b96",
+											"uuid": "d52ce30c-6ef2-42b4-bf7e-508b081ea625"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "編輯貼文留言",
+							"request": {
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "authorization",
+										"value": "Bearer {{TOKEN}}",
+										"uuid": "53d3b7e9-bbb5-4d8e-854e-f0173dae3dd3"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"comment\": \"修改後的留言\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{BASE_URL}}/post/comment/:id",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"post",
+										"comment",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "6637b5c6ff6943fb9986614f",
+											"uuid": "f469046c-17a2-450c-9b28-09cf3f7ea0e7"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "刪除貼文留言",
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "authorization",
+										"value": "Bearer {{TOKEN}}",
+										"uuid": "59f339db-162f-409a-a090-74f487b41ec2"
+									}
+								],
+								"url": {
+									"raw": "{{BASE_URL}}/post/comment/:id",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"post",
+										"comment",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "6637b5c6ff6943fb9986614f",
+											"uuid": "3e1f2151-7f66-4231-8aba-521ae3a20a0a"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "[ user ] 會員功能",
+			"item": [
+				{
+					"name": "資料相關",
+					"item": [
+						{
+							"name": "註冊",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"吉爾\",\r\n    \"email\": \"jill0407@gmail.com\",\r\n    \"password\": \"abc12345\",\r\n    \"confirmPassword\": \"abc12345\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{BASE_URL}}/user/sign_up",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"user",
+										"sign_up"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "登入",
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"email\": \"jill0407@gmail.com\",\r\n    \"password\": \"abc12345\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{BASE_URL}}/user/sign_in",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"user",
+										"sign_in"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "重設密碼",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "authorization",
+										"value": "Bearer {{TOKEN}}",
+										"type": "text",
+										"uuid": "c66194f1-405f-4379-8c12-67f7aa2f6b11"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"oldPassword\": \"abc12345\",\r\n    \"newPassword\": \"a1234567\",\r\n    \"confirmNewPassword\": \"a1234567\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{BASE_URL}}/user/updatePassword",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"user",
+										"updatePassword"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "取得個人資料",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "authorization",
+										"value": "Bearer {{TOKEN}}",
+										"type": "text",
+										"uuid": "b14fefc0-fb7e-4be6-80cb-17de743b35d9"
+									}
+								],
+								"url": {
+									"raw": "{{BASE_URL}}/user/profile",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"user",
+										"profile"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "編輯個人資料",
+							"request": {
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "authorization",
+										"value": "Bearer {{TOKEN}}",
+										"type": "text",
+										"uuid": "76b24e7d-0d4c-40d2-ada4-10a920300a69"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"Fang\",\r\n    \"photo\": \"https://randomuser.me/api/portraits/women/12.jpg\",\r\n    \"gender\": \"female\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{BASE_URL}}/user/profile",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"user",
+										"profile"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "追蹤功能",
+					"item": [
+						{
+							"name": "追蹤某個使用者",
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "authorization",
+										"value": "Bearer {{TOKEN}}",
+										"uuid": "c3d4c19c-9485-43b2-ab8e-4150630f4599"
+									}
+								],
+								"url": {
+									"raw": "{{BASE_URL}}/user/:id/follow",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"user",
+										":id",
+										"follow"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "663a6a14fb4e532e27e42004",
+											"uuid": "728172c3-9c8b-40a6-b4ab-12542fea4ab2"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "取消追蹤某個使用者",
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "authorization",
+										"value": "Bearer {{TOKEN}}",
+										"uuid": "6c5b2624-6244-41ba-970a-527f80f58fd6"
+									}
+								],
+								"url": {
+									"raw": "{{BASE_URL}}/user/:id/unfollow",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"user",
+										":id",
+										"unfollow"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "663a6a14fb4e532e27e42004",
+											"uuid": "f2476379-59f2-4c20-ae84-7c202bfd21e1"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "取得列表",
+					"item": [
+						{
+							"name": "取得個人按讚列表",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "authorization",
+										"value": "Bearer {{TOKEN}}",
+										"uuid": "8d242459-8300-4b70-b288-80018b3c4684"
+									}
+								],
+								"url": {
+									"raw": "{{BASE_URL}}/user/getLikePosts",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"user",
+										"getLikePosts"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "取得個人追蹤名單",
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "authorization",
+										"value": "Bearer {{TOKEN}}",
+										"uuid": "25b6a716-fa5b-40b8-aac3-4eaf822c8756"
+									}
+								],
+								"url": {
+									"raw": "{{BASE_URL}}/user/following",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"user",
+										"following"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "取得成功",
+									"originalRequest": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "authorization",
+												"value": "Bearer {{TOKEN}}"
+											}
+										],
+										"url": {
+											"raw": "{{BASE_URL}}/user/following",
+											"host": [
+												"{{BASE_URL}}"
+											],
+											"path": [
+												"user",
+												"following"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "X-Powered-By",
+											"value": "Express"
+										},
+										{
+											"key": "Access-Control-Allow-Origin",
+											"value": "*"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json; charset=utf-8"
+										},
+										{
+											"key": "Content-Length",
+											"value": "269"
+										},
+										{
+											"key": "ETag",
+											"value": "W/\"10d-QdNjDjmQk+FIaZf2se4gDRZSFMk\""
+										},
+										{
+											"key": "Date",
+											"value": "Wed, 08 May 2024 09:06:22 GMT"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=5"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"success\": true,\n    \"message\": \"取得追蹤列表成功\",\n    \"FollowingList\": [\n        {\n            \"user\": {\n                \"_id\": \"663a6a11fb4e532e27e42002\",\n                \"name\": \"小明\",\n                \"photo\": null\n            },\n            \"createdAt\": 1715158920123\n        },\n        {\n            \"user\": {\n                \"_id\": \"663b3e920e611c8e5430d5a3\",\n                \"name\": \"美美\",\n                \"photo\": null\n            },\n            \"createdAt\": 1715158938507\n        }\n    ]\n}"
+								}
+							]
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "其它",
+			"item": [
+				{
+					"name": "[ upload ] 上傳圖片",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "authorization",
+								"value": "Bearer {{TOKEN}}",
+								"type": "text",
+								"uuid": "14aac403-6d7e-4783-b6cd-3e53a122fada"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "image",
+									"type": "file",
+									"src": []
+								}
+							]
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/upload/image/?type=avatar",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"upload",
+								"image",
+								""
+							],
+							"query": [
+								{
+									"key": "type",
+									"value": "avatar"
+								},
+								{
+									"key": "type",
+									"value": "post",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "上傳成功",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "authorization",
+										"value": "Bearer {{TOKEN}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "image",
+											"type": "file",
+											"src": []
+										}
+									]
+								},
+								"url": {
+									"raw": "{{BASE_URL}}/upload/image/?type=avatar",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"upload",
+										"image",
+										""
+									],
+									"query": [
+										{
+											"key": "type",
+											"value": "avatar"
+										},
+										{
+											"key": "type",
+											"value": "post",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "631"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"277-OYrVJSUKoU6Gv3nhyoXBjai/XDU\""
+								},
+								{
+									"key": "Date",
+									"value": "Sun, 28 Apr 2024 16:54:37 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": true,\n    \"message\": \"上傳成功\",\n    \"imageUrl\": \"https://storage.googleapis.com/metawall-97514.appspot.com/images/74bb2474-1078-403f-a721-e90efbf4986f.jpg?GoogleAccessId=firebase-adminsdk-ohg3y%40metawall-97514.iam.gserviceaccount.com&Expires=16756646400&Signature=a0%2BUXPzZiAG8ZiNpXUcwCD8S9hsJ8JvFVIf3cuf1xuK1gfGrh4cBfTWoAJUNKIFFRIoiL30mlp9t7jZ5l4BFGXbxS6KoTSK2EbhZdVycx2p37v2JM%2BmG%2FlO5a83u5n%2FsWIWCvAuVu4dtN5wKvvUlLmzjE1SJe7WQjNUVOvkV3zEn6vhPTjnvyVwAJ9rCiGCXcQB8UtyIj17ckZsBxQtFFvPEqNVOej3eEkNozYc7APyD737McIX6w1uezcMB2Sn1zkRRBWuw%2FkNL1%2Bm0KWXYqdZWmJgpIAbaftSQkda4usBw2gYMoafWAEdxEbu6OhLum06WW9KfIDEqN8zrbt0ESQ%3D%3D\"\n}"
+						}
+					]
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "BASE_URL",
+			"value": "http://127.0.0.1:3000",
+			"type": "string"
+		},
+		{
+			"key": "TOKEN",
+			"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2M2IzZTkyMGU2MTFjOGU1NDMwZDVhMyIsImF1dGhfdGltZSI6MTcxNTE1ODYyOTc0OCwiaWF0IjoxNzE1MTc4ODM2LCJleHAiOjE3MTU3ODM2MzZ9.3pWBam243KECHKgpdI6gJetQ3di1kSr2G46_0C3Z1sA",
+			"type": "string"
+		},
+		{
+			"key": "BASE_URL",
+			"value": "https://node-training-2024.onrender.com",
+			"type": "string",
+			"disabled": true
+		}
+	]
+}
