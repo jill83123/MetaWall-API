@@ -1,4 +1,5 @@
 const User = require('../models/user.js');
+const Post = require('../models/post.js');
 
 const validator = require('validator');
 const bcrypt = require('bcryptjs');
@@ -164,6 +165,114 @@ const UserController = {
       },
     };
     handleSuccess({ res, message: '修改資料成功', data });
+  }),
+
+  getFollowingList: handleAsyncCatch(async (req, res, next) => {
+    const user = await User.findOne({ _id: req.user.id }).populate({
+      path: 'following',
+      populate: { path: 'user', select: 'name photo' },
+    });
+
+    const followingList = user.following || [];
+    handleSuccess({ res, message: '取得追蹤列表成功', data: { followingList } });
+  }),
+
+  followUser: handleAsyncCatch(async (req, res, next) => {
+    const currentUserId = req.user.id;
+    const { id: followedUserId } = req.params;
+
+    if (currentUserId === followedUserId) {
+      next(createCustomError({ statusCode: 400, message: '無法追蹤自己' }));
+      return;
+    }
+
+    const followedUser = await User.findOne({ _id: followedUserId });
+    if (!followedUser) {
+      next(createCustomError({ statusCode: 404, message: '該名使用者不存在' }));
+      return;
+    }
+
+    const isFollowing = followedUser.followers.some(
+      (item) => item.user.toString() === currentUserId.toString()
+    );
+    if (isFollowing) {
+      next(createCustomError({ statusCode: 400, message: '已追蹤該名使用者' }));
+      return;
+    }
+
+    await User.findByIdAndUpdate(
+      { _id: followedUserId },
+      { $push: { followers: { user: currentUserId } } },
+      { runValidators: true }
+    );
+
+    const currentUser = await User.findByIdAndUpdate(
+      { _id: currentUserId },
+      { $push: { following: { user: followedUserId } } },
+      { runValidators: true, new: true }
+    ).populate({
+      path: 'following',
+      populate: { path: 'user', select: 'name photo' },
+    });
+
+    const followingList = currentUser.following || [];
+    handleSuccess({ res, message: '追蹤成功', data: { followingList } });
+  }),
+
+  unfollowUser: handleAsyncCatch(async (req, res, next) => {
+    const currentUserId = req.user.id;
+    const { id: followedUserId } = req.params;
+
+    if (currentUserId === followedUserId) {
+      next(createCustomError({ statusCode: 400, message: '無法取消追蹤自己' }));
+      return;
+    }
+
+    const followedUser = await User.findOne({ _id: followedUserId });
+    if (!followedUser) {
+      next(createCustomError({ statusCode: 404, message: '該名使用者不存在' }));
+      return;
+    }
+
+    const isFollowing = followedUser.followers.some(
+      (item) => item.user.toString() === currentUserId.toString()
+    );
+    if (!isFollowing) {
+      next(createCustomError({ statusCode: 400, message: '已取消追蹤該名使用者' }));
+      return;
+    }
+
+    await User.findByIdAndUpdate(
+      { _id: followedUserId },
+      { $pull: { followers: { user: currentUserId } } },
+      { runValidators: true }
+    );
+
+    const currentUser = await User.findByIdAndUpdate(
+      { _id: currentUserId },
+      { $pull: { following: { user: followedUserId } } },
+      { runValidators: true, new: true }
+    ).populate({
+      path: 'following',
+      populate: { path: 'user', select: 'name photo' },
+    });
+
+    const followingList = currentUser.following || [];
+    handleSuccess({ res, message: '取消追蹤成功', data: { followingList } });
+  }),
+
+  getLikePosts: handleAsyncCatch(async (req, res, next) => {
+    const likePosts = await Post.find({
+      likes: { $in: [req.user.id] },
+    })
+      .select('user createdAt')
+      .populate({
+        path: 'user',
+        select: 'name photo',
+      })
+      .lean();
+
+    handleSuccess({ res, message: '取得按讚列表成功', data: { likePosts } });
   }),
 };
 

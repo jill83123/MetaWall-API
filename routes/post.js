@@ -4,13 +4,16 @@ const router = express.Router();
 const auth = require('../middlewares/auth.js');
 const PostController = require('../controllers/post.js');
 
-// 新增貼文
+router.get('/:id', auth, PostController.getPost);
 router.post('/', auth, PostController.createPost);
+router.patch('/:id', auth, PostController.editPost);
+router.delete('/:id', auth, PostController.deletePost);
 
-// 編輯貼文
-router.patch('/:id', PostController.editPost);
+router.post('/:id/like', auth, PostController.likePost);
+router.delete('/:id/unlike', auth, PostController.unlikePost);
 
-// 刪除單筆貼文
-router.delete('/:id', PostController.deletePost);
+router.post('/:id/comment', auth, PostController.createComment);
+router.patch('/comment/:id', auth, PostController.editComment);
+router.delete('/comment/:id', auth, PostController.deleteComment);
 
 module.exports = router;
