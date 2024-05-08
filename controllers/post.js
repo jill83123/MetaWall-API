@@ -9,16 +9,25 @@ const createCustomError = require('../service/createCustomError.js');
 const PostController = {
   getPosts: handleAsyncCatch(async (req, res, next) => {
     const { sort, q } = req.query;
-
     const timeSort = sort === 'asc' ? 'createdAt' : '-createdAt';
-    const keywords = new RegExp(q);
 
-    let fields = {};
+    const user = await User.findById(req.user.id).lean();
+    const followingUser = user.following.map((item) => item.user.toString());
+
+    let fields = [
+      {
+        $or: [{ type: 'public' }, { user: { $in: [...followingUser, req.user.id] } }],
+      },
+    ];
+
     if (q?.trim()) {
-      fields = { $or: [{ content: keywords }, { tags: keywords }] };
+      const keywords = new RegExp(q);
+      fields.push({
+        $or: [{ content: keywords }, { tags: keywords }],
+      });
     }
 
-    const posts = await Post.find(fields)
+    const posts = await Post.find({ $and: fields })
       .populate({
         path: 'user',
         select: 'name photo',
