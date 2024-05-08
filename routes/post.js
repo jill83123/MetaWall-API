@@ -4,6 +4,7 @@ const router = express.Router();
 const auth = require('../middlewares/auth.js');
 const PostController = require('../controllers/post.js');
 
+router.get('/:id', auth, PostController.getPost);
 router.post('/', auth, PostController.createPost);
 router.patch('/:id', PostController.editPost);
 router.delete('/:id', PostController.deletePost);

@@ -41,6 +41,27 @@ const PostController = {
     handleSuccess({ res, data: { posts }, message: '取得貼文成功' });
   }),
 
+  getPost: handleAsyncCatch(async (req, res, next) => {
+    const post = await Post.findOne({ _id: req.params.id })
+      .populate({
+        path: 'user',
+        select: 'name photo',
+      })
+      .populate({
+        path: 'comments',
+        select: 'comment createdAt updatedAt -post',
+      })
+      .lean();
+
+    if (!post) {
+      next(createCustomError({ statusCode: 404, message: '該筆貼文不存在' }));
+      return;
+    }
+
+    post.likes = post.likes.length;
+    handleSuccess({ res, data: { post }, message: '取得單一貼文成功' });
+  }),
+
   createPost: handleAsyncCatch(async (req, res, next) => {
     const { id } = req.user;
     const { image, content, type, tags } = req.body;
