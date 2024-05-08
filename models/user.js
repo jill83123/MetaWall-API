@@ -42,6 +42,36 @@ const userSchema = new mongoose.Schema(
       default: null,
     },
 
+    followers: [
+      {
+        user: {
+          type: mongoose.Schema.ObjectId,
+          ref: 'User',
+          required: [true, 'user 為必填'],
+        },
+        createdAt: {
+          type: Number,
+          default: Date.now,
+        },
+        _id: false,
+      },
+    ],
+
+    following: [
+      {
+        user: {
+          type: mongoose.Schema.ObjectId,
+          ref: 'User',
+          required: [true, 'user 為必填'],
+        },
+        createdAt: {
+          type: Number,
+          default: Date.now,
+        },
+        _id: false,
+      },
+    ],
+
     createdAt: {
       type: Number,
       default: Date.now(),
