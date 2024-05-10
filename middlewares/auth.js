@@ -5,7 +5,7 @@ const createCustomError = require('../service/createCustomError.js');
 
 const auth = handleAsyncCatch(async (req, res, next) => {
   if (!req.headers.authorization?.startsWith('Bearer')) {
-    next(createCustomError({ statusCode: 400, message: '缺少驗證資料' }));
+    next(createCustomError({ statusCode: 400, message: '您尚未登入' }));
     return;
   }
 

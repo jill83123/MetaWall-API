@@ -8,6 +8,14 @@ const createCustomError = require('../service/createCustomError.js');
 
 const PostController = {
   getPosts: handleAsyncCatch(async (req, res, next) => {
+    /**
+     * @swagger
+     * /posts:
+     *   get:
+     *     parameters:
+     *       - $ref: '#/components/parameters/keywordParam'
+     *       - $ref: '#/components/parameters/sortParam'
+     */
     const { sort, q } = req.query;
     const timeSort = sort === 'asc' ? 'createdAt' : '-createdAt';
 
@@ -52,6 +60,13 @@ const PostController = {
   }),
 
   getPost: handleAsyncCatch(async (req, res, next) => {
+    /**
+     * @swagger
+     * /post/{postId}:
+     *  get:
+     *    parameters:
+     *      - $ref: '#/components/parameters/postIdParam'
+     */
     const post = await Post.findOne({ _id: req.params.id })
       .populate({
         path: 'user',
@@ -73,6 +88,15 @@ const PostController = {
   }),
 
   getUserPosts: handleAsyncCatch(async (req, res, next) => {
+    /**
+     * @swagger
+     * /posts/user/{userId}:
+     *  get:
+     *    parameters:
+     *      - $ref: '#/components/parameters/userIdParam'
+     *      - $ref: '#/components/parameters/keywordParam'
+     *      - $ref: '#/components/parameters/sortParam'
+     */
     const user = await User.findById(req.params.id).select('name photo followers').lean();
 
     if (!user) {
@@ -107,6 +131,23 @@ const PostController = {
   }),
 
   createPost: handleAsyncCatch(async (req, res, next) => {
+    /**
+     * @swagger
+     * /post:
+     *   post:
+     *     requestBody:
+     *       required: true
+     *       content:
+     *         application/json:
+     *           schema:
+     *             $ref: '#/components/schemas/postSchema'
+     *           example:
+     *             content: 當我出門一瞬間，就完蛋啦
+     *             image: https://test.png
+     *             type: friend
+     *             tags:
+     *               - 大背頭
+     */
     const { id } = req.user;
     const { image, content, type, tags } = req.body;
 
@@ -119,11 +160,34 @@ const PostController = {
       createdAt: Date.now(),
     });
 
-    post.user = undefined;
-    handleSuccess({ res, message: '新增成功', data: { post } });
+    const data = {
+      ...post.toObject(),
+      likes: 0,
+      user: undefined,
+    };
+    handleSuccess({ res, message: '新增成功', data });
   }),
 
   editPost: handleAsyncCatch(async (req, res, next) => {
+    /**
+     * @swagger
+     * /post/{postId}:
+     *   patch:
+     *     parameters:
+     *       - $ref: '#/components/parameters/postIdParam'
+     *     requestBody:
+     *       required: true
+     *       content:
+     *         application/json:
+     *           schema:
+     *             $ref: '#/components/schemas/postSchema'
+     *           example:
+     *             content: 編輯後的內容
+     *             image: https://test.png
+     *             type: friend
+     *             tags:
+     *               - 編輯
+     */
     const { id } = req.params;
     const { image, content, type, tags } = req.body;
 
@@ -151,7 +215,11 @@ const PostController = {
       tags,
       updatedAt: Date.now(),
     };
-    const newPost = await Post.findByIdAndUpdate(id, editData, { new: true, runValidators: true });
+    const newPost = await Post.findByIdAndUpdate(id, editData, {
+      new: true,
+      runValidators: true,
+    }).lean();
+    newPost.likes = newPost.likes.length;
     newPost.user = undefined;
 
     handleSuccess({ res, message: '修改成功', data: { post: newPost } });
@@ -173,6 +241,13 @@ const PostController = {
   }),
 
   deletePost: handleAsyncCatch(async (req, res, next) => {
+    /**
+     * @swagger
+     * /post/{postId}:
+     *   delete:
+     *     parameters:
+     *       - $ref: '#/components/parameters/postIdParam'
+     */
     const { id } = req.params;
     const post = await Post.findById(id);
 
@@ -191,6 +266,13 @@ const PostController = {
   }),
 
   likePost: handleAsyncCatch(async (req, res, next) => {
+    /**
+     * @swagger
+     * /post/{postId}/like:
+     *   post:
+     *     parameters:
+     *       - $ref: '#/components/parameters/postIdParam'
+     */
     const { id: userId } = req.user;
     const { id: postId } = req.params;
 
@@ -216,6 +298,13 @@ const PostController = {
   }),
 
   unlikePost: handleAsyncCatch(async (req, res, next) => {
+    /**
+     * @swagger
+     * /post/{postId}/unlike:
+     *   delete:
+     *     parameters:
+     *       - $ref: '#/components/parameters/postIdParam'
+     */
     const { id: userId } = req.user;
     const { id: postId } = req.params;
 
@@ -241,6 +330,21 @@ const PostController = {
   }),
 
   createComment: handleAsyncCatch(async (req, res, next) => {
+    /**
+     * @swagger
+     * /post/{postId}/comment:
+     *   post:
+     *     parameters:
+     *       - $ref: '#/components/parameters/postIdParam'
+     *     requestBody:
+     *       required: true
+     *       content:
+     *         application/json:
+     *           schema:
+     *             $ref: '#/components/schemas/commentSchema'
+     *           example:
+     *             comment: 今天的風真的好大！
+     */
     const { id: userId } = req.user;
     const { id: postId } = req.params;
 
@@ -261,6 +365,21 @@ const PostController = {
   }),
 
   editComment: handleAsyncCatch(async (req, res, next) => {
+    /**
+     * @swagger
+     * /post/comment/{commentId}:
+     *   patch:
+     *     parameters:
+     *       - $ref: '#/components/parameters/commentIdParam'
+     *     requestBody:
+     *       required: true
+     *       content:
+     *         application/json:
+     *           schema:
+     *             $ref: '#/components/schemas/commentSchema'
+     *           example:
+     *             comment: 編輯後的留言
+     */
     const { id } = req.params;
 
     const comment = await Comment.findOne({ _id: id });
@@ -288,6 +407,13 @@ const PostController = {
   }),
 
   deleteComment: handleAsyncCatch(async (req, res, next) => {
+    /**
+     * @swagger
+     * /post/comment/{commentId}:
+     *   delete:
+     *     parameters:
+     *       - $ref: '#/components/parameters/commentIdParam'
+     */
     const { id } = req.params;
 
     const comment = await Comment.findOne({ _id: id });
