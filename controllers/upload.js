@@ -10,6 +10,28 @@ const createCustomError = require('../service/createCustomError.js');
 
 const uploadController = {
   uploadImage: handleAsyncCatch(async (req, res, next) => {
+    /**
+     * @swagger
+     * /upload/image/:
+     *   post:
+     *     parameters:
+     *       - name: type
+     *         in: query
+     *         schema:
+     *           type: string
+     *         required: true
+     *         description: 請輸入 avatar 或 post
+     *     requestBody:
+     *       required: true
+     *       content:
+     *         multipart/form-data:
+     *           schema:
+     *             type: object
+     *             properties:
+     *               image:
+     *                 type: string
+     *                 format: binary
+     */
     const { file } = req;
     const { type } = req.query;
 

@@ -1,0 +1,415 @@
+# 動態貼文 ----------------------------------------------------
+/posts:
+  get:
+    # summary: 取得所有貼文
+    responses:
+      '200':
+        description: 取得成功
+        content:
+          application/json:
+            example:
+              success: true
+              message: 取得貼文成功
+              posts:
+                - _id: 663b3fb877085580d71fea53
+                  user:
+                    _id: 663a6a14fb4e532e27e42004
+                    name: Jill
+                    photo: https://test.png
+                  image: https://test.png
+                  content: 當我出門一瞬間，就完蛋啦
+                  likes: 1
+                  type: friend
+                  tags:
+                    - 大背頭
+                  createdAt: 1715158968529
+                  updatedAt: null
+                  comments:
+                    - _id: 663dcf8ec9e18e4dc99fedf2
+                      user:
+                        _id: 663cffba3eb9bf322aba7ae2
+                        name: Fang
+                        photo: https://test.png
+                      comment: 今天的風真的好大！
+                      createdAt: 1715326862659
+                      updatedAt: null
+
+/posts/user/{userId}:
+  get:
+    # summary: 取得個人所有貼文
+    responses:
+      '200':
+        description: OK
+        content:
+          application/json:
+            schema:
+              type: object
+            example:
+              success: true
+              message: 取得個人所有貼文成功
+              user:
+                _id: 663a6a14fb4e532e27e42004
+                name: Jill
+                photo: https://test.png
+                followers: 0
+              posts:
+                - _id: 663b3fb877085580d71fea53
+                  image: https://test.png
+                  content: 當我出門一瞬間，就完蛋啦
+                  likes: 1
+                  type: friend
+                  tags:
+                    - 大背頭
+                  createdAt: 1715158968529
+                  updatedAt: null
+                  comments:
+                    - _id: 663dcf8ec9e18e4dc99fedf2
+                      user:
+                        _id: 663cffba3eb9bf322aba7ae2
+                        name: Fang
+                        photo: https://test.png
+                      comment: 今天的風真的好大！
+                      createdAt: 1715326862659
+                      updatedAt: null
+
+/post:
+  post:
+    # summary: 新增貼文
+    responses:
+      '200':
+        description: OK
+        content:
+          application/json:
+            schema:
+              type: object
+            example:
+              success: true
+              message: 新增成功
+              post:
+                image: 'https://test.png'
+                content: 當我出門一瞬間，就完蛋啦
+                likes: 0
+                type: friend
+                tags:
+                  - 大背頭
+                createdAt: 1715333266056
+                updatedAt: null
+                _id: 663de89211bd6ccca949bfac
+
+/post/{postId}:
+  get:
+    # summary: 取得單一貼文
+    responses:
+      '200':
+        description: OK
+        content:
+          application/json:
+            schema:
+              type: object
+            example:
+              success: true
+              message: 取得單一貼文成功
+              post:
+                _id: 663b3fb877085580d71fea53
+                user:
+                  _id: 663a6a14fb4e532e27e42004
+                  name: Jill
+                  photo: 'https://test.png'
+                image: ''
+                content: 當我出門一瞬間，就完蛋啦
+                likes: 1
+                type: friend
+                tags:
+                  - 大背頭
+                createdAt: 1715158968529
+                updatedAt: null
+                comments:
+                  - _id: 663dcf8ec9e18e4dc99fedf2
+                    user:
+                      _id: 663cffba3eb9bf322aba7ae2
+                      name: Fang
+                      photo: 'https://test.png'
+                    comment: 今天的風真的好大！
+                    createdAt: 1715326862659
+                    updatedAt: null
+
+  patch:
+    # summary: 編輯單一貼文
+    responses:
+      '200':
+        description: OK
+        content:
+          application/json:
+            schema:
+              type: object
+            example:
+              success: true
+              message: 修改成功
+              post:
+                _id: 663df41200bb278b9ad34292
+                image: https://test.png
+                content: 編輯後的內容
+                likes: 0
+                type: friend
+                tags:
+                  - 編輯
+                createdAt: 1715336210287
+                updatedAt: 1715336344108
+
+  delete:
+    # summary: 刪除單一貼文
+    responses:
+      '200':
+        description: OK
+        content:
+          application/json:
+            schema:
+              type: object
+            example:
+              success: true
+              message: 刪除成功
+
+# 貼文按讚功能 ----------------------------------------------------
+/post/{postId}/like:
+  post:
+    # summary: 按讚一篇貼文
+    responses:
+      '200':
+        description: 按讚成功
+        content:
+          application/json:
+            example:
+              success: true
+              message: 按讚成功
+              currentLikes: 1
+
+/post/{postId}/unlike:
+  delete:
+    # summary: 取消按讚一篇貼文
+    responses:
+      '200':
+        description: 取消按讚成功
+        content:
+          application/json:
+            example:
+              success: true
+              message: 取消按讚成功
+              currentLikes: 0
+
+/user/getLikePosts:
+  get:
+    # summary: 取得個人按讚列表
+    responses:
+      '200':
+        description: 取得成功
+        content:
+          application/json:
+            example:
+              success: true
+              message: 取得按讚列表成功
+              likePosts:
+                - _id: 663b8d3f5a99b0aa096bc986
+                  user:
+                    _id: 663a6a11fb4e532e27e42002
+                    name: 小明
+                    photo: null
+                  createdAt: 1715178815597
+
+# 貼文留言功能 ----------------------------------------------------
+/post/{postId}/comment:
+  post:
+    # summary: 新增貼文留言
+    responses:
+      '200':
+        description: 新增成功
+        content:
+          application/json:
+            example:
+              success: true
+              message: 新增留言成功
+
+/post/comment/{commentId}:
+  patch:
+    # summary: 編輯貼文留言
+    responses:
+      '200':
+        description: 編輯成功
+        content:
+          application/json:
+            example:
+              success: true
+              message: 編輯留言成功
+              comment:
+                _id: 663cff0e3eb9bf322aba7acc
+                user:
+                  _id: 663b3e920e611c8e5430d5a3
+                  name: 美美
+                  photo: https://test.png
+                post: 663b95c036386490fb8b4178
+                comment: 編輯後的留言
+                createdAt: 1715273486209
+                updatedAt: 1715273545710
+
+  delete:
+    # summary: 刪除貼文留言
+    responses:
+      '200':
+        description: 刪除成功
+        content:
+          application/json:
+            example:
+              success: true
+              message: 刪除留言成功
+
+# 使用者相關 ----------------------------------------------------
+/user/sign_up:
+  post:
+    # summary: 註冊
+    responses:
+      '200':
+        description: 註冊成功
+        content:
+          application/json:
+            example:
+              success: true
+              message: 註冊成功
+              token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2M2NmZmJhM2ViOWJmMzIyYWJhN2FlMiIsImF1dGhfdGltZSI6MTcxNTI3MjYzMjg5OCwiaWF0IjoxNzE1MjczNjU4LCJleHAiOjE3MTU4Nzg0NTh9.CZmFGeV8VVpa1GBhctSQPA5nMs9bDR-sk2yYKibROdc
+              expires: 1715878458234
+
+/user/sign_in:
+  post:
+    # summary: 登入
+    responses:
+      '200':
+        description: 登入成功
+        content:
+          application/json:
+            example:
+              success: true
+              message: 登入成功
+              token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2M2NmZmJhM2ViOWJmMzIyYWJhN2FlMiIsImF1dGhfdGltZSI6MTcxNTI3MjYzMjg5OCwiaWF0IjoxNzE1MjczNjg2LCJleHAiOjE3MTU4Nzg0ODZ9.08SQ2V4MKXXx71Of--svSHgrksOMzEPAX2gLGhIrkvA
+              expires: 1715878486944
+
+/user/updatePassword:
+  post:
+    # summary: 重設密碼
+    responses:
+      '200':
+        description: 修改成功
+        content:
+          application/json:
+            example:
+              success: true
+              message: 密碼修改成功
+              token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2M2NmZmJhM2ViOWJmMzIyYWJhN2FlMiIsImF1dGhfdGltZSI6MTcxNTI3MzczODY0NiwiaWF0IjoxNzE1MjczNzM4LCJleHAiOjE3MTU4Nzg1Mzh9.10crXUx0NiJSmuwQvuUnHyon2HFrh-65LkD4q9rm-R4
+              expires: 1715878538648
+
+/user/profile:
+  get:
+    # summary: 取得個人資料
+    responses:
+      '200':
+        description: 取得成功
+        content:
+          application/json:
+            example:
+              success: true
+              message: 取得資料成功
+              user:
+                name: Jill
+                photo: https://test.png
+                gender: female
+
+  patch:
+    # summary: 編輯個人資料
+    responses:
+      '200':
+        description: 修改成功
+        content:
+          application/json:
+            example:
+              success: true
+              message: 修改資料成功
+              user:
+                name: Fang
+                photo: https://test.png
+                gender: female
+
+# 追蹤功能 ----------------------------------------------------
+/user/following:
+  get:
+    # summary: 取得個人追蹤名單
+    responses:
+      '200':
+        description: 取得成功
+        content:
+          application/json:
+            example:
+              success: true
+              message: 取得追蹤列表成功
+              FollowingList:
+                - user:
+                    _id: 663a6a11fb4e532e27e42002
+                    name: 小明
+                    photo: https://test.png
+                  createdAt: 1715158920123
+                - user:
+                    _id: 663b3e920e611c8e5430d5a3
+                    name: 美美
+                    photo: https://test.png
+                  createdAt: 1715158938507
+
+/user/{userId}/follow:
+  post:
+    # summary: 追蹤某個使用者
+    responses:
+      '200':
+        description: 追蹤成功
+        content:
+          application/json:
+            example:
+              success: true
+              message: 追蹤成功
+              FollowingList:
+                - user:
+                    _id: 663a6a11fb4e532e27e42002
+                    name: 小明
+                    photo: https://test.png
+                  createdAt: 1715158920123
+                - user:
+                    _id: 663b3e920e611c8e5430d5a3
+                    name: 美美
+                    photo: https://test.png
+                  createdAt: 1715158938507
+
+/user/{userId}/unfollow:
+  delete:
+    # summary: 取消追蹤某個使用者
+    responses:
+      '200':
+        description: 取消成功
+        content:
+          application/json:
+            example:
+              success: true
+              message: 取消追蹤成功
+              FollowingList:
+                - user:
+                    _id: 663a6a11fb4e532e27e42002
+                    name: 小明
+                    photo: https://test.png
+                  createdAt: 1715158920123
+
+# 其它 ----------------------------------------------------
+/upload/image/:
+  post:
+    # summary: 上傳圖片
+    responses:
+      '200':
+        description: 上傳成功
+        content:
+          application/json:
+            example:
+              success: true
+              message: 上傳成功
+              imageUrl: https://storage.googleapis.com/metawall-97514.appspot.com/images/test.jpg

@@ -1,0 +1,68 @@
+components:
+  schemas:
+    postSchema:
+      type: object
+      properties:
+        content:
+          type: String
+          description: 貼文內容
+        image:
+          type: String
+          description: 圖片網址
+        type:
+          type: String
+          description: 貼文類型：只能是 friend 或 public
+        tags:
+          type: Array
+          description: 貼文標籤
+      required:
+        - content
+        - type
+
+    commentSchema:
+      type: object
+      properties:
+        comment:
+          type: String
+          description: 留言內容
+      required:
+        - comment
+
+  parameters:
+    postIdParam:
+      name: postId
+      in: path
+      schema:
+        type: string
+      required: true
+      description: 請輸入貼文 id
+
+    userIdParam:
+      name: userId
+      in: path
+      schema:
+        type: string
+      required: true
+      description: 請輸入使用者 id
+
+    commentIdParam:
+      name: commentId
+      in: path
+      schema:
+        type: string
+      required: true
+      description: 請輸入留言 id
+
+    keywordParam:
+      name: q
+      in: query
+      schema:
+        type: string
+      description: 請輸入關鍵字
+
+    sortParam:
+      name: sort
+      in: query
+      schema:
+        type: string
+      description: 請輸入 asc ( 由舊到新 ) 或 desc ( 預設，由新到舊 )

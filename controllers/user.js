@@ -15,6 +15,40 @@ function validatePassword(password) {
 
 const UserController = {
   sign_up: handleAsyncCatch(async (req, res, next) => {
+    /**
+     * @swagger
+     * /user/sign_up:
+     *   post:
+     *     requestBody:
+     *       required: true
+     *       content:
+     *         application/json:
+     *           schema:
+     *             type: object
+     *             properties:
+     *               name:
+     *                 type: String
+     *                 description: 暱稱
+     *               email:
+     *                 type: String
+     *                 description: 信箱
+     *               password:
+     *                 type: String
+     *                 description: 密碼
+     *               confirmPassword:
+     *                 type: String
+     *                 description: 確認密碼
+     *             required:
+     *               - name
+     *               - email
+     *               - password
+     *               - confirmPassword
+     *           example:
+     *             name: Jill
+     *             email: jill0407@gmail.com
+     *             password: abc12345
+     *             confirmPassword: abc12345
+     */
     const { name, email, password, confirmPassword } = req.body;
 
     if (!name?.trim() || !email?.trim() || !password?.trim() || !confirmPassword?.trim()) {
@@ -55,6 +89,30 @@ const UserController = {
   }),
 
   sign_in: handleAsyncCatch(async (req, res, next) => {
+    /**
+     * @swagger
+     * /user/sign_in:
+     *   post:
+     *     requestBody:
+     *       required: true
+     *       content:
+     *         application/json:
+     *           schema:
+     *             type: object
+     *             properties:
+     *               email:
+     *                 type: String
+     *                 description: 信箱
+     *               password:
+     *                 type: String
+     *                 description: 密碼
+     *             required:
+     *               - email
+     *               - password
+     *           example:
+     *             email: jill0407@gmail.com
+     *             password: abc12345
+     */
     const { email, password } = req.body;
 
     if (!email?.trim() || !password?.trim()) {
@@ -81,6 +139,35 @@ const UserController = {
   }),
 
   updatePassword: handleAsyncCatch(async (req, res, next) => {
+    /**
+     * @swagger
+     * /user/updatePassword:
+     *   post:
+     *     requestBody:
+     *       required: true
+     *       content:
+     *         application/json:
+     *           schema:
+     *             type: object
+     *             properties:
+     *               oldPassword:
+     *                 type: String
+     *                 description: 密碼
+     *               newPassword:
+     *                 type: String
+     *                 description: 重設後的密碼
+     *               confirmNewPassword:
+     *                 type: String
+     *                 description: 確認重設後的密碼
+     *             required:
+     *               - oldPassword
+     *               - newPassword
+     *               - confirmNewPassword
+     *           example:
+     *             oldPassword: abc12345
+     *             newPassword: a1234567
+     *             confirmNewPassword: a1234567
+     */
     const { id, password } = req.user;
     const { oldPassword, newPassword, confirmNewPassword } = req.body;
 
@@ -133,6 +220,31 @@ const UserController = {
   }),
 
   editUserData: handleAsyncCatch(async (req, res, next) => {
+    /**
+     * @swagger
+     * /user/profile:
+     *   patch:
+     *     requestBody:
+     *       required: true
+     *       content:
+     *         application/json:
+     *           schema:
+     *             type: object
+     *             properties:
+     *               name:
+     *                 type: String
+     *                 description: 暱稱
+     *               photo:
+     *                 type: String
+     *                 description: 大頭貼
+     *               gender:
+     *                 type: String
+     *                 description: 性別
+     *           example:
+     *             name: Fang
+     *             photo: https://test.png
+     *             gender: female
+     */
     const { name, photo, gender } = req.body;
 
     if (!name?.trim() || !gender?.trim()) {
@@ -178,6 +290,13 @@ const UserController = {
   }),
 
   followUser: handleAsyncCatch(async (req, res, next) => {
+    /**
+     * @swagger
+     * /user/{userId}/follow:
+     *  post:
+     *    parameters:
+     *      - $ref: '#/components/parameters/userIdParam'
+     */
     const currentUserId = req.user.id;
     const { id: followedUserId } = req.params;
 
@@ -220,6 +339,13 @@ const UserController = {
   }),
 
   unfollowUser: handleAsyncCatch(async (req, res, next) => {
+    /**
+     * @swagger
+     * /user/{userId}/unfollow:
+     *  delete:
+     *    parameters:
+     *      - $ref: '#/components/parameters/userIdParam'
+     */
     const currentUserId = req.user.id;
     const { id: followedUserId } = req.params;
 

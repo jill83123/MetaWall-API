@@ -14,7 +14,7 @@ function handleMongooseError(err) {
       .join('、');
   } else if (err.path === '_id') {
     status = 404;
-    errorMessage = '找不到 id';
+    errorMessage = '找不到 id 或格式錯誤';
   } else {
     status = 500;
     errorMessage = '資料庫錯誤';

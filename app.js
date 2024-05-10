@@ -5,6 +5,9 @@ const logger = require('morgan');
 const cors = require('cors');
 const handleError = require('./service/handleError.js');
 
+const swaggerUi = require('swagger-ui-express');
+const swaggerDocs = require('./swagger.js');
+
 // 記錄重大錯誤
 process.on('uncaughtException', (err) => {
   console.error('Uncaught Fatal Exception !\n', err);
@@ -40,6 +43,7 @@ app.use('/post', postRouter);
 app.use('/posts', postsRouter);
 app.use('/user', userRouter);
 app.use('/upload', uploadRouter);
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
 // catch 404
 app.use((req, res, next) => {
