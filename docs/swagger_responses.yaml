@@ -304,6 +304,18 @@
               token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2M2NmZmJhM2ViOWJmMzIyYWJhN2FlMiIsImF1dGhfdGltZSI6MTcxNTI3MzczODY0NiwiaWF0IjoxNzE1MjczNzM4LCJleHAiOjE3MTU4Nzg1Mzh9.10crXUx0NiJSmuwQvuUnHyon2HFrh-65LkD4q9rm-R4
               expires: 1715878538648
 
+/user/check:
+  post:
+    # summary: 驗證使用者
+    responses:
+      '200':
+        description: 驗證成功
+        content:
+          application/json:
+            example:
+              success: true
+              message: 驗證成功
+
 /user/profile:
   get:
     # summary: 取得個人資料

@@ -46,6 +46,19 @@ router.post('/updatePassword', auth, UserController.updatePassword);
 
 /**
  * @swagger
+ * /user/check:
+ *   post:
+ *     summary: 驗證使用者
+ *     tags:
+ *       - 使用者相關
+ *     security:
+ *       - bearerAuth: []
+ *     description: 驗證 token 是否正確或過期
+ */
+router.post('/check', auth, UserController.checkUser);
+
+/**
+ * @swagger
  * /user/profile:
  *   get:
  *     summary: 取得個人資料

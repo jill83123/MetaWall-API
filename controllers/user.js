@@ -205,6 +205,10 @@ const UserController = {
     handleSuccess({ res, message: '密碼修改成功', data: { token, expires } });
   }),
 
+  checkUser: handleAsyncCatch(async (req, res, next) => {
+    handleSuccess({ res, message: '驗證成功' });
+  }),
+
   getUserData: handleAsyncCatch(async (req, res, next) => {
     const { name, photo, gender } = req.user;
 
