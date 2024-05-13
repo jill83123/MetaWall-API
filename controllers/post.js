@@ -52,8 +52,10 @@ const PostController = {
       return;
     }
 
-    posts.forEach((post, index) => {
-      posts[index].likes = post.likes.length;
+    posts.forEach((post) => {
+      const isLiked = post.likes.some((userId) => userId.toString() === req.user.id);
+      post.isLiked = isLiked ? true : false;
+      post.likes = post.likes.length;
     });
 
     handleSuccess({ res, data: { posts }, message: '取得貼文成功' });
@@ -83,7 +85,10 @@ const PostController = {
       return;
     }
 
+    const isLiked = post.likes.some((userId) => userId.toString() === req.user.id);
+    post.isLiked = isLiked ? true : false;
     post.likes = post.likes.length;
+
     handleSuccess({ res, data: { post }, message: '取得單一貼文成功' });
   }),
 
@@ -123,8 +128,10 @@ const PostController = {
       .sort(timeSort)
       .lean();
 
-    posts.forEach((post, index) => {
-      posts[index].likes = post?.likes.length || 0;
+    posts.forEach((post) => {
+      const isLiked = post.likes.some((userId) => userId.toString() === req.user.id);
+      post.isLiked = isLiked ? true : false;
+      post.likes = post.likes.length;
     });
 
     handleSuccess({ res, message: '取得個人所有貼文成功', data: { user, posts } });
@@ -219,7 +226,11 @@ const PostController = {
       new: true,
       runValidators: true,
     }).lean();
+
+    const isLiked = newPost.likes.some((userId) => userId.toString() === req.user.id);
+    newPost.isLiked = isLiked ? true : false;
     newPost.likes = newPost.likes.length;
+
     newPost.user = undefined;
 
     handleSuccess({ res, message: '修改成功', data: { post: newPost } });

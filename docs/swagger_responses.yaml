@@ -33,6 +33,7 @@
                       comment: 今天的風真的好大！
                       createdAt: 1715326862659
                       updatedAt: null
+                  isLiked: false
 
 /posts/user/{userId}:
   get:
@@ -71,6 +72,7 @@
                       comment: 今天的風真的好大！
                       createdAt: 1715326862659
                       updatedAt: null
+                  isLiked: false
 
 /post:
   post:
@@ -132,6 +134,7 @@
                     comment: 今天的風真的好大！
                     createdAt: 1715326862659
                     updatedAt: null
+                isLiked: false
 
   patch:
     # summary: 編輯單一貼文
@@ -155,6 +158,7 @@
                   - 編輯
                 createdAt: 1715336210287
                 updatedAt: 1715336344108
+                isLiked: false
 
   delete:
     # summary: 刪除單一貼文
