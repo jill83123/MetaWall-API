@@ -210,10 +210,11 @@ const UserController = {
   }),
 
   getUserData: handleAsyncCatch(async (req, res, next) => {
-    const { name, photo, gender } = req.user;
+    const { id, name, photo, gender } = req.user;
 
     const data = {
       user: {
+        id,
         name,
         photo,
         gender,
