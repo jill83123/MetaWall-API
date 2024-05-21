@@ -3,7 +3,10 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const cors = require('cors');
+const { rateLimit } = require('express-rate-limit');
+
 const handleError = require('./service/handleError.js');
+const createCustomError = require('./service/createCustomError.js');
 
 const swaggerUi = require('swagger-ui-express');
 const swaggerDocs = require('./swagger.js');
@@ -18,6 +21,15 @@ process.on('uncaughtException', (err) => {
 process.on('unhandledRejection', (reason, promise) => {
   console.error('未捕捉到的 rejection:\n', promise);
   console.error('原因:\n', reason);
+});
+
+// 流量限制
+const limiter = rateLimit({
+  windowMs: 10 * 60 * 1000,
+  limit: 1000,
+  handler: (req, res, next) => {
+    next(createCustomError({ statusCode: 429, message: '發出過多的請求，請稍後再試！' }));
+  },
 });
 
 // router
@@ -37,6 +49,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(cors());
+app.use(limiter);
 
 // router
 app.use('/post', postRouter);
