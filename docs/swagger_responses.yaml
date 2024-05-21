@@ -55,6 +55,10 @@
                 followers: 0
               posts:
                 - _id: 663b3fb877085580d71fea53
+                  user:
+                    _id: 663a6a14fb4e532e27e42004
+                    name: Jill
+                    photo: https://test.png
                   image: https://test.png
                   content: 當我出門一瞬間，就完蛋啦
                   likes: 1

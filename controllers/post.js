@@ -120,7 +120,10 @@ const PostController = {
     }
 
     const posts = await Post.find({ user: { $in: [req.params.id] }, ...fields })
-      .select('-user')
+      .populate({
+        path: 'user',
+        select: 'name photo',
+      })
       .populate({
         path: 'comments',
         select: 'comment createdAt updatedAt -post',
