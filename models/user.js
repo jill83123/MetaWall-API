@@ -30,7 +30,7 @@ const userSchema = new mongoose.Schema(
 
     gender: {
       type: String,
-      default: null,
+      default: 'intersex',
       enum: {
         values: ['female', 'male', 'intersex'],
         message: 'gender 只能是 female 或 male 或 intersex',
@@ -39,7 +39,8 @@ const userSchema = new mongoose.Schema(
 
     photo: {
       type: String,
-      default: null,
+      default:
+        'https://firebasestorage.googleapis.com/v0/b/metawall-97514.appspot.com/o/images%2F350746b6-05b6-44fe-8c78-3f51106a90cb.png?alt=media&token=a893adda-d7db-4b0b-829d-2d36e7c5bf00',
     },
 
     followers: [
