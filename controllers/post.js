@@ -108,7 +108,6 @@ const PostController = {
       next(createCustomError({ statusCode: 404, message: '該名使用者不存在' }));
       return;
     }
-    user.followers = user?.followers.length || 0;
 
     const { sort, q } = req.query;
     const timeSort = sort === 'asc' ? 'createdAt' : '-createdAt';
@@ -116,7 +115,13 @@ const PostController = {
 
     let fields = {};
     if (q?.trim()) {
-      fields = { $or: [{ content: keywords }, { tags: keywords }] };
+      fields.$or = [{ content: keywords }, { tags: keywords }];
+    }
+
+    const isFollowed =
+      user.followers.find((follower) => follower.user.toString() === req.user.id) || false;
+    if (!isFollowed) {
+      fields.type = 'public';
     }
 
     const posts = await Post.find({ user: { $in: [req.params.id] }, ...fields })
@@ -130,6 +135,8 @@ const PostController = {
       })
       .sort(timeSort)
       .lean();
+
+    user.followers = user?.followers.length || 0;
 
     posts.forEach((post) => {
       const isLiked = post.likes.some((userId) => userId.toString() === req.user.id);
