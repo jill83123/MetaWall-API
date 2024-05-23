@@ -118,8 +118,7 @@ const PostController = {
       fields.$or = [{ content: keywords }, { tags: keywords }];
     }
 
-    const isFollowed =
-      user.followers.find((follower) => follower.user.toString() === req.user.id) || false;
+    const isFollowed = user.followers.some((follower) => follower.user.toString() === req.user.id);
     if (!isFollowed && req.params.id !== req.user.id) {
       fields.type = 'public';
     }
@@ -137,6 +136,7 @@ const PostController = {
       .lean();
 
     user.followers = user?.followers.length || 0;
+    user.isFollowed = isFollowed;
 
     posts.forEach((post) => {
       const isLiked = post.likes.some((userId) => userId.toString() === req.user.id);
