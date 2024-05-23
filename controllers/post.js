@@ -120,7 +120,7 @@ const PostController = {
 
     const isFollowed =
       user.followers.find((follower) => follower.user.toString() === req.user.id) || false;
-    if (!isFollowed) {
+    if (!isFollowed && req.params.id !== req.user.id) {
       fields.type = 'public';
     }
 
