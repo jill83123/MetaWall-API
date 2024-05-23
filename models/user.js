@@ -14,7 +14,11 @@ const userSchema = new mongoose.Schema(
         },
         message: 'email 格式不正確',
       },
-      select: false,
+    },
+
+    isVerifiedEmail: {
+      type: Boolean,
+      default: false,
     },
 
     password: {

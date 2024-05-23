@@ -4,6 +4,8 @@ const Post = require('../models/post.js');
 const validator = require('validator');
 const bcrypt = require('bcryptjs');
 const generateJWT = require('../service/generateJWT.js');
+const decodeJWT = require('../service/decodeJWT.js');
+const sendVerificationMail = require('../service/sendVerificationMail.js');
 
 const handleSuccess = require('../service/handleSuccess.js');
 const handleAsyncCatch = require('../service/handleAsyncCatch.js');
@@ -85,6 +87,7 @@ const UserController = {
     const { id, auth_time } = newUser;
     const { token, expires } = generateJWT({ id, auth_time });
 
+    await sendVerificationMail(newUser);
     handleSuccess({ res, message: '註冊成功', data: { token, expires } });
   }),
 
@@ -210,7 +213,7 @@ const UserController = {
   }),
 
   getUserData: handleAsyncCatch(async (req, res, next) => {
-    const { id, name, photo, gender } = req.user;
+    const { id, name, photo, gender, isVerifiedEmail } = req.user;
 
     const data = {
       user: {
@@ -218,6 +221,7 @@ const UserController = {
         name,
         photo,
         gender,
+        isVerifiedEmail,
       },
     };
 
@@ -404,6 +408,53 @@ const UserController = {
       .lean();
 
     handleSuccess({ res, message: '取得按讚列表成功', data: { likePosts } });
+  }),
+
+  verifyMail: handleAsyncCatch(async (req, res, next) => {
+    /**
+     * @swagger
+     * /user/verifyMail:
+     *  post:
+     *    requestBody:
+     *       required: true
+     *       content:
+     *         application/json:
+     *           schema:
+     *             type: object
+     *             properties:
+     *               token:
+     *                 type: String
+     *                 description: 用於驗證信箱的 token
+     *             required:
+     *               - token
+     *             example:
+     *               token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2NGUxODEyMGQxNzE0ZDcxYjU0ZTY3NSIsImlhdCI6MTcxNjM5NDAwMiwiZXhwIjoxNzE2Mzk0NjAyfQ.1o3ceXcc-7w2eY_3vv3hgDU2VRnoOoNndlmfeMOhJcs
+     */
+    const { token } = req.body;
+    const decode = await decodeJWT(token);
+
+    const userData = await User.findByIdAndUpdate({ _id: decode.id }, { isVerifiedEmail: true });
+
+    if (!userData) {
+      next(createCustomError({ statusCode: 401, message: '驗證失敗，請確認網址是否正確' }));
+      return;
+    }
+    if (userData.isVerifiedEmail) {
+      next(createCustomError({ statusCode: 400, message: '已成功驗證信箱' }));
+      return;
+    }
+
+    handleSuccess({ res, message: '驗證成功' });
+  }),
+
+  sendVerificationMail: handleAsyncCatch(async (req, res, next) => {
+    if (req.user.isVerifiedEmail) {
+      next(createCustomError({ statusCode: 400, message: '已成功驗證信箱' }));
+      return;
+    }
+
+    await sendVerificationMail(req.user);
+    handleSuccess({ res, message: '發送成功' });
   }),
 };
 

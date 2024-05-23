@@ -2,6 +2,8 @@ const express = require('express');
 const router = express.Router();
 
 const auth = require('../middlewares/auth.js');
+const isVerifiedEmail = require('../middlewares/isVerifiedEmail.js');
+
 const PostController = require('../controllers/post.js');
 
 /**
@@ -28,7 +30,7 @@ router.get('/:id', auth, PostController.getPost);
  *       - bearerAuth: []
  *     description:
  */
-router.post('/', auth, PostController.createPost);
+router.post('/', auth, isVerifiedEmail, PostController.createPost);
 
 /**
  * @swagger
@@ -41,7 +43,7 @@ router.post('/', auth, PostController.createPost);
  *       - bearerAuth: []
  *     description:
  */
-router.patch('/:id', auth, PostController.editPost);
+router.patch('/:id', auth, isVerifiedEmail, PostController.editPost);
 
 /**
  * @swagger
@@ -54,7 +56,7 @@ router.patch('/:id', auth, PostController.editPost);
  *       - bearerAuth: []
  *     description:
  */
-router.delete('/:id', auth, PostController.deletePost);
+router.delete('/:id', auth, isVerifiedEmail, PostController.deletePost);
 
 /**
  * @swagger
@@ -67,7 +69,7 @@ router.delete('/:id', auth, PostController.deletePost);
  *       - bearerAuth: []
  *     description:
  */
-router.post('/:id/like', auth, PostController.likePost);
+router.post('/:id/like', auth, isVerifiedEmail, PostController.likePost);
 
 /**
  * @swagger
@@ -80,7 +82,7 @@ router.post('/:id/like', auth, PostController.likePost);
  *       - bearerAuth: []
  *     description:
  */
-router.delete('/:id/unlike', auth, PostController.unlikePost);
+router.delete('/:id/unlike', auth, isVerifiedEmail, PostController.unlikePost);
 
 /**
  * @swagger
@@ -93,7 +95,7 @@ router.delete('/:id/unlike', auth, PostController.unlikePost);
  *       - bearerAuth: []
  *     description:
  */
-router.post('/:id/comment', auth, PostController.createComment);
+router.post('/:id/comment', auth, isVerifiedEmail, PostController.createComment);
 
 /**
  * @swagger
@@ -106,7 +108,7 @@ router.post('/:id/comment', auth, PostController.createComment);
  *       - bearerAuth: []
  *     description:
  */
-router.patch('/comment/:id', auth, PostController.editComment);
+router.patch('/comment/:id', auth, isVerifiedEmail, PostController.editComment);
 
 /**
  * @swagger
@@ -119,6 +121,6 @@ router.patch('/comment/:id', auth, PostController.editComment);
  *       - bearerAuth: []
  *     description:
  */
-router.delete('/comment/:id', auth, PostController.deleteComment);
+router.delete('/comment/:id', auth, isVerifiedEmail, PostController.deleteComment);
 
 module.exports = router;

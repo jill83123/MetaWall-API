@@ -7,7 +7,7 @@ const options = {
       version: '1.0.0',
       title: 'MetaWall API 文件',
       description:
-        '**到元宇宙展開全新社交貼文動態牆**<br>※ 登入成功後請點「 Authorize 🔓 」輸入 Token',
+        '**到元宇宙展開全新社交貼文動態牆**<br>※ 登入成功後請點「 Authorize 🔓 」輸入 Token<br>※ 註冊帳號後，若未驗證信箱僅能瀏覽文章',
     },
     servers: [
       {

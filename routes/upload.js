@@ -3,6 +3,7 @@ const router = express.Router();
 
 const auth = require('../middlewares/auth.js');
 const checkImage = require('../middlewares/checkImage.js');
+const isVerifiedEmail = require('../middlewares/isVerifiedEmail.js');
 
 const uploadController = require('../controllers/upload.js');
 
@@ -23,6 +24,6 @@ const uploadController = require('../controllers/upload.js');
  *       1. 圖片寬高比必需為 1:1
  *       2. 解析度寬度至少 300 像素以上
  */
-router.post('/image', auth, checkImage, uploadController.uploadImage);
+router.post('/image', auth, isVerifiedEmail, checkImage, uploadController.uploadImage);
 
 module.exports = router;

@@ -2,6 +2,9 @@ const express = require('express');
 const router = express.Router();
 
 const auth = require('../middlewares/auth.js');
+const isVerifiedEmail = require('../middlewares/isVerifiedEmail.js');
+const { verifyMailLimiter } = require('../middlewares/rateLimiters.js');
+
 const UserController = require('../controllers/user.js');
 
 /**
@@ -107,7 +110,7 @@ router.get('/following', auth, UserController.getFollowingList);
  *       - bearerAuth: []
  *     description:
  */
-router.post('/:id/follow', auth, UserController.followUser);
+router.post('/:id/follow', auth, isVerifiedEmail, UserController.followUser);
 
 /**
  * @swagger
@@ -120,7 +123,7 @@ router.post('/:id/follow', auth, UserController.followUser);
  *       - bearerAuth: []
  *     description:
  */
-router.delete('/:id/unfollow', auth, UserController.unfollowUser);
+router.delete('/:id/unfollow', auth, isVerifiedEmail, UserController.unfollowUser);
 
 /**
  * @swagger
@@ -134,5 +137,29 @@ router.delete('/:id/unfollow', auth, UserController.unfollowUser);
  *     description:
  */
 router.get('/getLikePosts', auth, UserController.getLikePosts);
+
+/**
+ * @swagger
+ * /user/sendVerificationMail:
+ *   post:
+ *     summary: 發送驗證信
+ *     tags:
+ *       - 使用者相關
+ *     security:
+ *       - bearerAuth: []
+ *     description:
+ */
+router.post('/sendVerificationMail', verifyMailLimiter, auth, UserController.sendVerificationMail);
+
+/**
+ * @swagger
+ * /user/verifyMail:
+ *   post:
+ *     summary: 驗證信箱
+ *     tags:
+ *       - 使用者相關
+ *     description:
+ */
+router.post('/verifyMail', UserController.verifyMail);
 
 module.exports = router;

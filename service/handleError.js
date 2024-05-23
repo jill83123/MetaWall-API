@@ -46,9 +46,13 @@ function handleError(err) {
   }
 
   // JWT Token 錯誤
-  if (err.name === 'TokenExpiredError' || err.name === 'JsonWebTokenError') {
+  if (err.name === 'JsonWebTokenError') {
     err.statusCode = 401;
     err.message = '驗證失敗，請重新登入';
+  }
+  if (err.name === 'TokenExpiredError') {
+    err.statusCode = 401;
+    err.message = '驗證已過期';
   }
 
   if (err.name === 'MulterError') {

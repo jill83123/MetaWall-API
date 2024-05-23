@@ -298,6 +298,30 @@
               token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2M2NmZmJhM2ViOWJmMzIyYWJhN2FlMiIsImF1dGhfdGltZSI6MTcxNTI3MjYzMjg5OCwiaWF0IjoxNzE1MjczNjg2LCJleHAiOjE3MTU4Nzg0ODZ9.08SQ2V4MKXXx71Of--svSHgrksOMzEPAX2gLGhIrkvA
               expires: 1715878486944
 
+/user/sendVerificationMail:
+  post:
+    # summary: 發送驗證信
+    responses:
+      '200':
+        description: 發送成功
+        content:
+          application/json:
+            example:
+              success: true
+              message: 發送成功
+
+/user/verifyMail:
+  post:
+    # summary: 驗證信箱
+    responses:
+      '200':
+        description: 驗證成功
+        content:
+          application/json:
+            example:
+              success: true
+              message: 驗證成功
+
 /user/updatePassword:
   post:
     # summary: 重設密碼
